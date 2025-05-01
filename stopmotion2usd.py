@@ -1,5 +1,4 @@
 from render_usd import UsdRenderer
-import glob
 import igl
 import os
 from render_usd import UsdRenderer
@@ -8,6 +7,7 @@ import argparse
 from plyfile import PlyData, PlyElement
 import numpy as np
 from pxr import UsdGeom
+import math
 
 def list_of_strings(arg):
     return arg.split(',')
@@ -30,7 +30,7 @@ def read_ply(path):
     F[:, :] = np.vstack(plydata['face'].data['vertex_indices'])  # Fill face vertex IDs
     return V, F, vertex_colors
 
-def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, fps: int, filename_patterns:list[str],extension:str, zfiller: int, end_frame: int):
+def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step: int, filename_patterns:list[str],extension:str, zfiller: int, end_frame: int):
     import glob
     numFrames = 0
     for pattern in filename_patterns:
@@ -41,10 +41,9 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, fps: int, 
     if end_frame > 0:
         numFrames = min(numFrames, end_frame)
 
-    dt = 1.0 / fps
     time = 0.0
     for frame in range(1,numFrames):
-        time += dt
+        time += time_step
         print("frame: ", frame,"/", numFrames, "time: ", time)
         renderer.begin_frame(time)
         for pattern in filename_patterns:
@@ -79,11 +78,11 @@ parser.add_argument(
     dest="output",
     help="Output USD file (must end with .usd | .usda | .usdc)")
 parser.add_argument(
-    "--fps", 
-    default=60, 
-    type=int, 
-    dest="fps", 
-    help="Frames per second with which the simulation data input was generated.")
+    "--time-step", 
+    default=1.0/60.0, 
+    type=float, 
+    dest="time_step", 
+    help="time step size with which the simulation data input was generated. Default is 1/60.0 to match 60 fps.")
 parser.add_argument(
     "--up-axis", 
     default="Z", 
@@ -128,8 +127,8 @@ parser.add_argument(
 
 args = parser.parse_args()
 stage = Usd.Stage.CreateNew(args.output)
-renderer = UsdRenderer(stage, up_axis=args.up_axis, fps=args.fps,scaling=1.0)
+renderer = UsdRenderer(stage, up_axis=args.up_axis, fps=math.floor(1.0/args.time_step), scaling=1.0)
 UsdGeom.SetStageMetersPerUnit(renderer.stage, args.meters_per_unit)
-export_obj_stop_motion_to_usd(renderer, args.input, args.fps, args.filename_patterns,args.extension, args.zfiller, args.end_frame)
+export_obj_stop_motion_to_usd(renderer, args.input, args.time_step, args.filename_patterns,args.extension, args.zfiller, args.end_frame)
 
 renderer.save()
