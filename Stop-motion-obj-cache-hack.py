@@ -1,5 +1,6 @@
 #Nice code found from the issue section of the Stop-motion-obj addon for blender
 #Makes life better.... way better!
+#This bypasses the caching issues of the render animation button in that plugin by loading the frames individually.
 
 import bpy
 
