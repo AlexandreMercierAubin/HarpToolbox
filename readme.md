@@ -1,4 +1,4 @@
-Happy animation & rendering python toolbox contains scripts to smooth out the process of exporting the outputs of simulators to rendering softwares.
+Harp Animation & Rendering Python Toolbox contains scripts to smooth out the process of exporting the outputs of simulators to rendering softwares.
 
 # stopmotion2usd 
 Converts sequences of models to a Universal Scene Description (USD).
