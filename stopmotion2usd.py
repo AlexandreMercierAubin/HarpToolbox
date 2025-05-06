@@ -52,7 +52,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
                 continue # Skip this frame if the file does not exist
 
             # Read the mesh    
-            vertex_color = None
+            vertex_colors_in = None
             if extension == "ply":
                 V, F, vertex_colors_in = read_ply(folder+pattern+str(frame).zfill(zfiller)+"."+extension)
             else:

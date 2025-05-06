@@ -512,7 +512,7 @@ class UsdRenderer:
         if colors:
             mesh.GetDisplayColorAttr().Set(colors, self.time)
 
-        if vertex_colors.any():
+        if vertex_colors is not None and vertex_colors.any():
             mesh.GetDisplayColorAttr().Set(vertex_colors, self.time)
             mesh.GetDisplayColorPrimvar().Set(vertex_colors, self.time)
             mesh.GetDisplayColorPrimvar().SetInterpolation("vertex")
