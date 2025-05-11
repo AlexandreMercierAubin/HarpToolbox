@@ -23,7 +23,7 @@ parser.add_argument(
 
 args = parser.parse_args()
 print(args.input + args.filename_pattern)
-filenamesList = glob.glob(args.input + args.filename_pattern)
+filenamesList = [f for f in glob.glob(args.input + args.filename_pattern) if not f.endswith("_white.png")]
 
 fileTotal=len(filenamesList)
 for file in filenamesList:
