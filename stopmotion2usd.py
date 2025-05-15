@@ -49,6 +49,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
         for pattern in filename_patterns:
             # Check if the file exists
             if not os.path.exists(folder+pattern+str(frame).zfill(zfiller)+"."+extension):
+                print("File does not exist: "+ folder+pattern+str(frame).zfill(zfiller)+"."+extension +" skipping this frame")
                 continue # Skip this frame if the file does not exist
 
             # Read the mesh    
