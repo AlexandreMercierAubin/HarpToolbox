@@ -30,13 +30,27 @@ def read_ply(path):
     F[:, :] = np.vstack(plydata['face'].data['vertex_indices'])  # Fill face vertex IDs
     return V, F, vertex_colors
 
-def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step: int, filename_patterns:list[str],extension:str, zfiller: int, end_frame: int):
+def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step: int, filename_patterns:list[str],extension:str, end_frame: int):
     import glob
+    
+    print("Setting up renderer for stop motion export")
+    #automagically determine the zfiller and the number of frames
+    zfiller = 0
     numFrames = 0
     for pattern in filename_patterns:
         filenamesList = glob.glob(folder+pattern+"*."+extension)
-        if len(filenamesList) > numFrames:
-            numFrames = len(filenamesList)
+        for filename in filenamesList:
+            try:
+                # Extract the numeric part from the filename
+                base_name = os.path.basename(filename).replace(pattern, "")
+                number_part = ''.join(filter(str.isdigit, base_name))
+                if number_part:
+                    numFrames = max(numFrames, int(number_part))
+                    # Find the zfill in filenames
+                    if len(number_part) > zfiller:
+                        zfiller = len(number_part)
+            except ValueError:
+                pass  # Ignore files that don't have numeric parts
     
     if end_frame > 0:
         numFrames = min(numFrames, end_frame)
@@ -106,13 +120,6 @@ parser.add_argument(
     help="file extension for the stop-motion")
 
 parser.add_argument(
-    "--zfill", 
-    default=3, 
-    type=int, 
-    dest="zfiller",
-    help="frame id zero padding")
-
-parser.add_argument(
     "--end-frame", 
     default=-1, 
     type=int, 
@@ -130,6 +137,6 @@ args = parser.parse_args()
 stage = Usd.Stage.CreateNew(args.output)
 renderer = UsdRenderer(stage, up_axis=args.up_axis, fps=math.floor(1.0/args.time_step), scaling=1.0)
 UsdGeom.SetStageMetersPerUnit(renderer.stage, args.meters_per_unit)
-export_obj_stop_motion_to_usd(renderer, args.input, args.time_step, args.filename_patterns,args.extension, args.zfiller, args.end_frame)
+export_obj_stop_motion_to_usd(renderer, args.input, args.time_step, args.filename_patterns,args.extension, args.end_frame)
 
 renderer.save()

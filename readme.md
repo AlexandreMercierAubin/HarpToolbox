@@ -6,13 +6,12 @@ Converts sequences of models to a Universal Scene Description (USD).
 Arguments
 * --input : Input path containing simulation data to render to USD
 * -o : Output USD file (must end with .usd | .usda | .usdc)
-* --fps : Frames per second with which the simulation data input was generated.
+* --time-step : Time step size between stop motion files with which the simulation data input was generated.
 * --up-axis : The up axis, one of ('Y' or 'Z' or less probably 'X')
-* --filename-patterns : the pattern name of relevant entities in the filenames like 'object_001_', 'object_002_', etc.
-* --file-type : file extension for the stop-motion. Tested only with obj and ply. For ply vertex colors are exported.
-* --zfill : frame id zero padding. For instance 3 would look like 000,001,002, etc.
-* --end-frame : optional last frame to be exported
-* --meters-per-units : number of meters per scene units. Sets default to 1 so blender does not shrink everything.
+* --filename-patterns : The pattern name of relevant entities in the filenames like 'object_001_', 'object_002_', etc.
+* --file-type : File extension for the stop-motion. Tested only with obj and ply. For ply vertex colors are exported.
+* --end-frame : Optional last frame to be exported
+* --meters-per-units : Number of meters per scene units. Sets default to 1 so blender does not shrink everything.
 
 sample command:
 ```
