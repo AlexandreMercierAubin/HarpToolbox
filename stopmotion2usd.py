@@ -30,7 +30,7 @@ def read_ply(path):
     F[:, :] = np.vstack(plydata['face'].data['vertex_indices'])  # Fill face vertex IDs
     return V, F, vertex_colors
 
-def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step: int, filename_patterns:list[str],extension:str, end_frame: int):
+def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step: int, filename_patterns:list[str],extension:str, end_frame: int, start_frame: int):
     import glob
     
     print("Setting up renderer for stop motion export")
@@ -56,7 +56,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
         numFrames = min(numFrames, end_frame)
 
     time = 0.0
-    for frame in range(1,numFrames+1):
+    for frame in range(start_frame,numFrames+1):
         time += time_step
         print("frame: ", frame,"/", numFrames, "time: ", time)
         renderer.begin_frame(time)
@@ -127,6 +127,13 @@ parser.add_argument(
     help="last frame to be exported")
 
 parser.add_argument(
+    "--start-frame", 
+    default=1, 
+    type=int, 
+    dest="start_frame",
+    help="start frame to be exported")
+
+parser.add_argument(
     "--meters-per-unit",
     default=1.0, 
     type=float, 
@@ -137,6 +144,6 @@ args = parser.parse_args()
 stage = Usd.Stage.CreateNew(args.output)
 renderer = UsdRenderer(stage, up_axis=args.up_axis, fps=math.floor(1.0/args.time_step), scaling=1.0)
 UsdGeom.SetStageMetersPerUnit(renderer.stage, args.meters_per_unit)
-export_obj_stop_motion_to_usd(renderer, args.input, args.time_step, args.filename_patterns,args.extension, args.end_frame)
+export_obj_stop_motion_to_usd(renderer, args.input, args.time_step, args.filename_patterns,args.extension, args.end_frame, args.start_frame)
 
 renderer.save()
