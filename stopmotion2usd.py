@@ -35,7 +35,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
     
     print("Setting up renderer for stop motion export")
     #automagically determine the zfiller and the number of frames
-    zfiller = 0
+    zfiller = 10
     numFrames = 0
     for pattern in filename_patterns:
         filenamesList = glob.glob(folder+pattern+"*."+extension)
@@ -47,7 +47,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
                 if number_part:
                     numFrames = max(numFrames, int(number_part))
                     # Find the zfill in filenames
-                    if len(number_part) > zfiller:
+                    if len(number_part) < zfiller:
                         zfiller = len(number_part)
             except ValueError:
                 pass  # Ignore files that don't have numeric parts
@@ -56,7 +56,7 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
         numFrames = min(numFrames, end_frame)
 
     time = 0.0
-    for frame in range(1,numFrames):
+    for frame in range(1,numFrames+1):
         time += time_step
         print("frame: ", frame,"/", numFrames, "time: ", time)
         renderer.begin_frame(time)
