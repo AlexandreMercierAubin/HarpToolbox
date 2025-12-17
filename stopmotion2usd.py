@@ -39,6 +39,9 @@ def export_obj_stop_motion_to_usd(renderer: UsdRenderer, folder: str, time_step:
     numFrames = 0
     for pattern in filename_patterns:
         filenamesList = glob.glob(folder+pattern+"*."+extension)
+        if not filenamesList:
+            print("No files found for pattern: "+ pattern + "and with extension: "+ extension)
+            continue
         for filename in filenamesList:
             try:
                 # Extract the numeric part from the filename
