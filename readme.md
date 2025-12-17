@@ -3,6 +3,11 @@ Harp Animation & Rendering Python Toolbox contains scripts to smooth out the pro
 # stopmotion2usd 
 Converts sequences of models to a Universal Scene Description (USD).
 
+install requirements
+```
+pip install -r .\requirements.txt
+```
+
 Arguments
 * --input : Input path containing simulation data to render to USD
 * -o : Output USD file (must end with .usd | .usda | .usdc)
@@ -15,7 +20,7 @@ Arguments
 
 sample command:
 ```
-python ./stopmotion2usd.py -i path/to/obj/sequence -o outputSequence.usd --fps 100 --up-axis Z --filename-patterns frame_001_,frame_002_,frame_potat_
+python ./stopmotion2usd.py -i path/to/obj/sequence -o outputSequence.usd --time-step 0.01 --up-axis Z --filename-patterns frame_001_,frame_002_,frame_potat_
 ```
 
 # background_white_fill
